@@ -1,0 +1,23 @@
+# Edit this file to introduce tasks to be run by Cronholio.
+#
+# Each task to process has to be defined through a single line
+# indicating with different fields when the task will be processd
+# and what card to process for the task.
+#
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# @daily and @hourly are also supported.
+#
+# Notice that reviews will be scheduled based on Anki's
+# notion of time and timezones.
+#
+# For example, you can schedule a card for review
+# at 5 a.m every week with:
+# 0 5 * * 1 cid_1874826238
+#
+# For more information see the manual pages of Cronholio
+# Note: All comment lines will be stripped upon saving,
+#       a.k.a lazy programming.
+#
+# m h  dom mon dow   cid_card.id
