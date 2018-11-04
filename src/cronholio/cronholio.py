@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.1
+# Version: 0.0.2
 
 
 from aqt import mw
@@ -20,7 +20,6 @@ from .const import *
 
 
 class Cronholio(object):
-    today_crt = None #init to 12:00 AM of localtime
     crontab   = Crontab()
     cronCard  = False
     cronDue   = ''
@@ -29,10 +28,6 @@ class Cronholio(object):
     def __init__(self):
         addHook("Reviewer.contextMenuEvent", self.showContextMenu)
         addHook('showQuestion', self.onShowQuestion)
-
-        d=datetime.today()
-        d=datetime(d.year, d.month, d.day)
-        self.today_crt=int(time.mktime(d.timetuple()))
 
     def showContextMenu(self, r, m):
         a=m.addAction("Add Cron Task")
@@ -73,7 +68,7 @@ class Cronholio(object):
 
     def nextDue(self, cid):
         delay=self.crontab.getTime(cid)
-        date=self._getDueDate(delay)
+        date=self._getDueDay(delay)
         tod=time.localtime(delay)
         if not date:
             return time.strftime(_("%H:%M"), tod)
@@ -82,14 +77,20 @@ class Cronholio(object):
     def setCardDue(self, card):
         card.type=card.queue=2
         delay=self.crontab.getTime(card.id)
-        card.due=self._getDueDate(delay)
+        card.due=self._getDueDay(delay)
         if not card.due: #same day delays
-            card.due=delay
+            card.due=int(delay)
             card.queue=1
+            card.left=1001
         card.flushSched()
 
-    def _getDueDate(self, time):
-        due=int(time-self.today_crt)//86400+mw.col.sched.today
+    def _getDueDay(self, t):
+        # initialize today_crt to 12:00 AM of today
+        d=datetime.today()
+        d=datetime(d.year, d.month, d.day)
+        today_crt=int(time.mktime(d.timetuple()))
+
+        due=int(t-today_crt)//86400+mw.col.sched.today
         if due==mw.col.sched.today:
             return 0
         return due

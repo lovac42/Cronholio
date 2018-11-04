@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.1
+# Version: 0.0.2
 
 
 from aqt import mw
@@ -61,7 +61,8 @@ def answerCard(self, card, ease, _old):
     elif ease==2:
         cronholio.setCardDue(card)
     else: #pass for later
-        card.due=time.time()+600 #10m
+        card.due=int(time.time()+600) #10m
+        card.left=1001
         card.queue=1
         card.flushSched()
 
