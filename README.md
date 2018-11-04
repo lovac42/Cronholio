@@ -5,7 +5,7 @@ Labeled as beta due to timezone/locale/DST uncertainties. But otherwise, <i>fair
 ## About:
 This addon designates the current card in the reviewer as a cron card. A cron card follows a schedule from the assigned expression. This is useful for reminders and small notes kept in flashcards.  
 
-<b>Expression Syntax:</b>
+<b>Expression Syntax:</b>  
 <b>@daily</b>: Repeats the card once per day.  
 <b>@hourly</b>: Repeats the card every hour.  
 
