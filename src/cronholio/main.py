@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.2
+# Version: 0.0.3
 
 
 from aqt import mw
@@ -59,7 +59,11 @@ def answerCard(self, card, ease, _old):
     if ease==1:
         cronholio.unset(card)
     elif ease==2:
-        cronholio.setCardDue(card)
+        #initialize new cards just in case
+        if card.type!=2:
+            card.ivl=1
+            card.factor=2500
+        cronholio.setCardDue(card) #flushed()
     else: #pass for later
         card.due=int(time.time()+600) #10m
         card.left=1001

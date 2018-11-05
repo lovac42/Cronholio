@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.2
+# Version: 0.0.3
 
 
 from aqt import mw
@@ -67,31 +67,34 @@ class Cronholio(object):
         tooltip(_("Cron card removed"), period=1000)
 
     def nextDue(self, cid):
-        delay=self.crontab.getTime(cid)
-        date=self._getDueDay(delay)
-        tod=time.localtime(delay)
-        if not date:
+        dt=self.crontab.getDateTime(cid)
+        tm=self._getTime(dt)
+        tod=time.localtime(tm)
+        if not self._getDueDay(dt):
             return time.strftime(_("%H:%M"), tod)
         return time.strftime(_("%m/%d/%Y"), tod)
 
     def setCardDue(self, card):
-        card.type=card.queue=2
-        delay=self.crontab.getTime(card.id)
-        card.due=self._getDueDay(delay)
-        if not card.due: #same day delays
-            card.due=int(delay)
+        dt=self.crontab.getDateTime(card.id)
+        dd=self._getDueDay(dt)
+        if not dd: #same day delays
+            tm=self._getTime(dt)
+            card.due=int(tm)
             card.queue=1
             card.left=1001
+        else:
+            card.due=dd+mw.col.sched.today
+            card.type=card.queue=2
         card.flushSched()
 
-    def _getDueDay(self, t):
-        # initialize today_crt to 12:00 AM of today
+    def _getDueDay(self, dt):
         d=datetime.today()
-        d=datetime(d.year, d.month, d.day)
-        today_crt=int(time.mktime(d.timetuple()))
+        today=datetime(d.year, d.month, d.day)
+        due=datetime(dt.year, dt.month, dt.day)
+        diff=(due-today).days
+        return diff
 
-        due=int(t-today_crt)//86400+mw.col.sched.today
-        if due==mw.col.sched.today:
-            return 0
-        return due
+    def _getTime(self, dt):
+        tm=time.mktime(dt.timetuple())
+        return tm
 
