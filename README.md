@@ -1,4 +1,4 @@
-# Cronholio: Cron Task Scheduler (beta)
+# Cronholio: Cron Task Scheduler [beta2]
 
 Labeled as beta due to timezone/locale/DST uncertainties. But otherwise, <i>fairly harmless.</i>
 
@@ -6,7 +6,7 @@ Labeled as beta due to timezone/locale/DST uncertainties. But otherwise, <i>fair
 ## About:
 This addon designates the current card in the reviewer as a cron card. A cron card follows a schedule from the assigned expression. This is useful for reminders and small notes kept in flashcards.  
 
-###Expression Syntax:  
+### Expression Syntax:  
 <b>@daily</b>: Repeats the card once per day.  
 <b>@hourly</b>: Repeats the card every hour.  
 
@@ -21,10 +21,10 @@ This addon designates the current card in the reviewer as a cron card. A cron ca
 <b>0 0 1 jan &ast;</b>: Every 1st of Jan.  
 <b>0 0 L &ast; &ast;</b>: Last day of the month.  
 
-For more info see here: https://en.wikipedia.org/wiki/Cron
+For more info see here: https://en.wikipedia.org/wiki/Cron  
 
 
-###Macro Expansions:
+### Macro Expansions:
 This can be customized in addon options for Anki2.1.  
 For Anki2.0, you will need to edit the config.json file.  
 
