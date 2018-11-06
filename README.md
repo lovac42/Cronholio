@@ -6,7 +6,7 @@ Labeled as beta due to timezone/locale/DST uncertainties. But otherwise, <i>fair
 ## About:
 This addon designates the current card in the reviewer as a cron card. A cron card follows a schedule from the assigned expression. This is useful for reminders and small notes kept in flashcards.  
 
-<b>Expression Syntax:</b>  
+###Expression Syntax:  
 <b>@daily</b>: Repeats the card once per day.  
 <b>@hourly</b>: Repeats the card every hour.  
 
@@ -14,13 +14,29 @@ This addon designates the current card in the reviewer as a cron card. A cron ca
 <b>&ast;/15 &ast; &ast; &ast; &ast;</b>: Every 15 minutes.  
 <b>&ast;  &ast;/3 &ast; &ast; &ast;</b>: Every 3 hours.  
 <b>0 0 1 &ast; &ast;</b>: Every 1st of the month.  
-<b>0 0 &ast; &ast; 1</b>: Every Monday.  
+<b>0 0 &ast; &ast; mon</b>: Every Monday.  
 <b>0 0 &ast; &ast; 2,4,6</b>: Every Tue, Thur, Sat.  
-<b>0 0 &ast; &ast; 1-3,5</b>: Every Mon to Wed and Fri.  
 <b>0 0 &ast; &ast; 5#3</b>: 3rd Fri of the month.  
+<b>0 0 &ast; &ast; mon-wed,fri</b>: Every Mon to Wed and Fri.  
+<b>0 0 1 jan &ast;</b>: Every 1st of Jan.  
 <b>0 0 L &ast; &ast;</b>: Last day of the month.  
 
 For more info see here: https://en.wikipedia.org/wiki/Cron
+
+
+###Macro Expansions:
+This can be customized in addon options for Anki2.1.  
+For Anki2.0, you will need to edit the config.json file.  
+
+<b>h</b>: Hourly  
+<b>d</b>: Daily  
+<b>2d</b>: Every 2 days from the 1st of the month.  
+<b>3d</b>: Every 3 days from the 1st of the month.  
+<b>wd</b>: Weekdays  
+<b>we</b>: Weekends  
+<b>mon,wed-fri</b>: Every Monday, Wed-Fri  
+<b>1 jan,feb</b>: Every 1st of Jan and Feb  
+<b>S,m,t,w,T,f,s</b>: corresponds to letters of the week.  
 
 
 ## Schedules:

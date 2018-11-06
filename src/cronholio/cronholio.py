@@ -2,17 +2,19 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.3
+# Version: 0.0.4
 
 
 from aqt import mw
 from aqt.qt import *
 from anki.hooks import addHook
-from aqt.utils import getText, tooltip
+from aqt.utils import getText, tooltip, showText
 from codecs import open
+from anki.utils import json
 from datetime import datetime
 import time
 
+from .lib.croniter import croniter
 from .lib.dateutil.tz import tz
 from .crontab import Crontab
 from .util import loadFile
@@ -20,18 +22,26 @@ from .const import *
 
 
 class Cronholio(object):
+    tagNote   = False
+    hotkey    = ''
+    macros    = {}
+
     crontab   = Crontab()
     cronCard  = False
     cronDue   = ''
     cronExp   = ''
 
+
     def __init__(self):
         addHook("Reviewer.contextMenuEvent", self.showContextMenu)
         addHook('showQuestion', self.onShowQuestion)
+        addHook('profileLoaded', self._loadMacros)
+        if ANKI21:
+            mw.addonManager.setConfigUpdatedAction(__name__, self._loadMacros) 
 
     def showContextMenu(self, r, m):
         a=m.addAction("Add Cron Task")
-        a.setShortcut(QKeySequence(HOTKEY))
+        a.setShortcut(QKeySequence(self.hotkey))
         a.triggered.connect(lambda:self.set(r.card))
 
     def onShowQuestion(self):
@@ -49,18 +59,33 @@ class Cronholio(object):
         default=self.crontab.contains(card.id)
         if not default: default='* * * * *'
         exp, ok = getText("m  h  dom  mon  dow | @daily | @hourly", default=default)
-        if ok and self.crontab.set(card.id,exp):
-            if AUTO_ADD_RM_TAGS:
-                n=card.note()
-                n.addTag('@cronCard')
-                n.flush()
-            tooltip(_("Cron card created"), period=1000)
-            mw.reset()
+        if ok:
+            exp=self.checkMacro(exp)
+            if self.crontab.set(card.id,exp):
+                if self.tagNote:
+                    n=card.note()
+                    n.addTag('@cronCard')
+                    n.flush()
+                tooltip(_("Cron card created"), period=1000)
+                mw.reset()
+
+    def checkMacro(self, exp):
+        exp=exp.strip()
+        if not exp.startswith('@') and '*' not in exp:
+            e=self.macros.get(exp, None)
+            if e: return e
+
+            exp=exp.lower()
+            e='0 0 * * %s'%exp #mon,wed,fri
+            if croniter.is_valid(e): return e
+            e='0 0 %s *'%exp #jan,feb
+            if croniter.is_valid(e): return e
+        return exp
 
     def unset(self, card):
         self.crontab.unset(card.id)
         self.cronCard=False
-        if AUTO_ADD_RM_TAGS:
+        if self.tagNote:
             n=card.note()
             n.delTag('@cronCard')
             n.flush()
@@ -97,4 +122,15 @@ class Cronholio(object):
     def _getTime(self, dt):
         tm=time.mktime(dt.timetuple())
         return tm
+
+    def _loadMacros(self, config=None):
+        if not config:
+            if ANKI21:
+                config=mw.addonManager.getConfig(__name__)
+            else:
+                data=loadFile('','config.json')
+                config=json.loads(data)
+        self.hotkey=config['hotkey']
+        self.tagNote=config['add_tag_to_notes_even_multi_cards']
+        self.macros=config['macros']
 
