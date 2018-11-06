@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.4
+# Version: 0.0.5
 
 
 from aqt import mw
@@ -50,7 +50,7 @@ def answerButtonList(self, _old):
 def buttonTime(self, i, _old):
     if not cronholio.cronCard:
         return _old(self, i)
-    if i==1: return "<i>%s</i><br>"%cronholio.cronExp
+    if i==1: return "<i>%s&nbsp;&nbsp;</i><br>"%cronholio.cronExp
     if i==2: return "[<b>%s</b>]<br>"%cronholio.cronDue
     if i==3: return "10m<br>"
 

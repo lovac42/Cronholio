@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.3
+# Version: 0.0.4
 
 
 import os, time
@@ -42,8 +42,10 @@ class Crontab(object):
 
     def set(self, cid, exp):
         if self.check(exp):
+            if self.contains(cid): #clear double entries in _crontab
+                self._modified=True
             self._entries[cid]=exp
-            self.recordTask(exp,cid)
+            self.recordTask(cid,exp)
             return exp
 
     def unset(self, cid):
@@ -53,7 +55,7 @@ class Crontab(object):
     def contains(self, cid):
         return self._entries.get(cid, False)
 
-    def recordTask(self, exp, cid):
+    def recordTask(self, cid, exp):
         "Write single exp to file"
         mediaFolder=os.path.join(mw.pm.profileFolder(), 'collection.media')
         fname=mediaFolder+'/_crontab'

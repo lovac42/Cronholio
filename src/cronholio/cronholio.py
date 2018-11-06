@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.5
+# Version: 0.0.6
 
 
 from aqt import mw
@@ -56,9 +56,9 @@ class Cronholio(object):
             self.cronCard=False
 
     def set(self, card):
-        default=self.crontab.contains(card.id)
-        if not default: default='* * * * *'
-        exp, ok = getText("m  h  dom  mon  dow | @daily | @hourly", default=default)
+        task=self.crontab.contains(card.id)
+        if not task: task='0 0 * * *'
+        exp, ok = getText("m  h  dom  mon  dow | @daily | @hourly", default=task)
         if ok:
             exp=self.checkMacro(exp)
             if self.crontab.set(card.id,exp):
