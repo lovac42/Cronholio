@@ -1,5 +1,5 @@
 {
-	"hotkey": "",
+	"hotkey": null,
 	"add_tag_to_notes_even_multi_cards": false,
 	"macros": {
 		"h":   "@hourly",
@@ -7,14 +7,9 @@
 		"1d":  "@daily",
 		"2d":  "0 0 1/2 * *",
 		"3d":  "0 0 1/3 * *",
-		"S":   "0 0 * * sun",
-		"m":   "0 0 * * mon",
-		"t":   "0 0 * * tue",
-		"w":   "0 0 * * wed",
-		"T":   "0 0 * * thu",
-		"f":   "0 0 * * fri",
-		"s":   "0 0 * * sat",
 		"wd":  "0 0 * * mon-fri",
-		"we":  "0 0 * * sun,sat"
+		"we":  "0 0 * * sun,sat",
+		"thur":   "0 0 * * thu",
+		"thurs":  "0 0 * * thu"
 	}
 }

@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.4
+# Version: 0.0.5
 
 
 from aqt import mw
@@ -23,7 +23,7 @@ from .const import *
 
 class Cronholio(object):
     tagNote   = False
-    hotkey    = ''
+    hotkey    = None
     macros    = {}
 
     crontab   = Crontab()

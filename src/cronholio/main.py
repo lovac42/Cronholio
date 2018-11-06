@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.3
+# Version: 0.0.4
 
 
 from aqt import mw
@@ -24,6 +24,19 @@ cronholio = Cronholio()
 #Saved crontab whenever col is saved
 def col_save(self, name=None, mod=None):
     cronholio.crontab.dumpTab()
+
+
+#Handing keybinds Anki2.0
+def keyHandler(self, evt, _old):
+    if unicode(evt.text()) == cronholio.hotkey:
+        cronholio.set(mw.reviewer.card)
+    else: _old(self, evt)
+
+#Handing keybinds Anki2.1
+def shortcutKeys(self, _old): 
+    ret=_old(self)
+    ret.append((cronholio.hotkey,lambda:cronholio.set(mw.reviewer.card)))
+    return ret
 
 
 def answerButtonList(self, _old):
@@ -82,4 +95,7 @@ if ANKI21:
     import anki.schedv2
     anki.schedv2.Scheduler.answerCard = wrap(anki.schedv2.Scheduler.answerCard, answerCard, 'around')
     anki.schedv2.Scheduler.answerButtons = wrap(anki.schedv2.Scheduler.answerButtons, answerButtons, 'around')
+    Reviewer._shortcutKeys = wrap(Reviewer._shortcutKeys, shortcutKeys, 'around')
+else:
+    Reviewer._keyHandler = wrap(Reviewer._keyHandler, keyHandler, 'around')
 
