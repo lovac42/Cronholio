@@ -30,12 +30,15 @@ For Anki2.0, you will need to edit the config.json file.
 
 <b>h</b>: Hourly  
 <b>d</b>: Daily  
-<b>2d</b>: Every 2 days (counted from the 1st of the month).  
-<b>3d</b>: Every 3 days (counted from the 1st of the month).  
+<b>ed</b>: Even days  
+<b>od</b>: Odd days  
 <b>wd</b>: Weekdays  
 <b>we</b>: Weekends  
 <b>mon,wed-fri</b>: Every Monday, Wed-Fri  
 <b>1 jan,feb</b>: Every 1st of Jan and Feb  
+<b>eye</b>: The eye of the month (15th~16th)  
+
+When changing configs, you can test out your syntax with this site: https://crontab-generator.org  
 
 
 ## Schedules:
