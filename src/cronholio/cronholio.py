@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.6
+# Version: 0.0.7
 
 
 from aqt import mw
@@ -36,8 +36,6 @@ class Cronholio(object):
         addHook("Reviewer.contextMenuEvent", self.showContextMenu)
         addHook('showQuestion', self.onShowQuestion)
         addHook('profileLoaded', self._loadMacros)
-        if ANKI21:
-            mw.addonManager.setConfigUpdatedAction(__name__, self._loadMacros) 
 
     def showContextMenu(self, r, m):
         a=m.addAction("Add Cron Task")
@@ -125,12 +123,17 @@ class Cronholio(object):
 
     def _loadMacros(self, config=None):
         if not config:
-            if ANKI21:
+            try:
                 config=mw.addonManager.getConfig(__name__)
-            else:
+            except AttributeError:
                 data=loadFile('','config.json')
                 config=json.loads(data)
+
         self.hotkey=config['hotkey']
         self.tagNote=config['add_tag_to_notes_even_multi_cards']
         self.macros=config['macros']
+
+        try: #Must be loaded after profile loads, after addonmanger21 loads.
+            mw.addonManager.setConfigUpdatedAction(__name__, self._loadMacros) 
+        except AttributeError: pass
 
