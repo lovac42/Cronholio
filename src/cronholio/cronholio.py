@@ -2,7 +2,7 @@
 # Copyright: (C) 2018 Lovac42
 # Support: https://github.com/lovac42/Cronholio
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
-# Version: 0.0.7
+# Version: 0.0.8
 
 
 from aqt import mw
@@ -35,7 +35,11 @@ class Cronholio(object):
     def __init__(self):
         addHook("Reviewer.contextMenuEvent", self.showContextMenu)
         addHook('showQuestion', self.onShowQuestion)
-        addHook('profileLoaded', self._loadMacros)
+        addHook('profileLoaded', self.onProfileLoaded)
+
+    def onProfileLoaded(self):
+        self._loadMacros()
+        QTimer.singleShot(1000, self._setMacrosCallback)
 
     def showContextMenu(self, r, m):
         a=m.addAction("Add Cron Task")
@@ -129,10 +133,12 @@ class Cronholio(object):
                 data=loadFile('','config.json')
                 config=json.loads(data)
 
-        self.hotkey=config['hotkey']
-        self.tagNote=config['add_tag_to_notes_even_multi_cards']
-        self.macros=config['macros']
+        if config:
+            self.hotkey=config['hotkey']
+            self.tagNote=config['add_tag_to_notes_even_multi_cards']
+            self.macros=config['macros']
 
+    def _setMacrosCallback(self):
         try: #Must be loaded after profile loads, after addonmanger21 loads.
             mw.addonManager.setConfigUpdatedAction(__name__, self._loadMacros) 
         except AttributeError: pass
