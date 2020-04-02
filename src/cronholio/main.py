@@ -4,15 +4,18 @@
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 
+import time
+import anki.sched
 from aqt import mw
 from anki.hooks import wrap
 from aqt.reviewer import Reviewer
+from anki.lang import _
+
+from .lib.com.lovac42.anki.version import CCBC
+if CCBC:
+    unicode = str
+
 from .cronholio import Cronholio
-from .const import *
-import anki.sched
-import time
-
-
 cronholio = Cronholio()
 
 
@@ -90,11 +93,11 @@ Reviewer._answerButtonList = wrap(Reviewer._answerButtonList, answerButtonList, 
 Reviewer._buttonTime = wrap(Reviewer._buttonTime, buttonTime, 'around')
 anki.sched.Scheduler.answerButtons = wrap(anki.sched.Scheduler.answerButtons, answerButtons, 'around')
 anki.sched.Scheduler.answerCard = wrap(anki.sched.Scheduler.answerCard, answerCard, 'around')
-if ANKI21:
+
+try:
     import anki.schedv2
     anki.schedv2.Scheduler.answerCard = wrap(anki.schedv2.Scheduler.answerCard, answerCard, 'around')
     anki.schedv2.Scheduler.answerButtons = wrap(anki.schedv2.Scheduler.answerButtons, answerButtons, 'around')
     Reviewer._shortcutKeys = wrap(Reviewer._shortcutKeys, shortcutKeys, 'around')
-else:
+except:
     Reviewer._keyHandler = wrap(Reviewer._keyHandler, keyHandler, 'around')
-

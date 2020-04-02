@@ -10,11 +10,12 @@ from anki.hooks import addHook
 from datetime import datetime
 from codecs import open
 from shutil import copyfile
-from .util import loadFile
-from .lib.croniter import croniter
-from .const import *
-# from aqt.utils import showWarning, showInfo, showText, getText, tooltip
 
+from .util import loadFile
+from .lib.com.lovac42.anki.version import ANKI20
+from .lib.croniter import croniter
+
+# from aqt.utils import showWarning, showInfo, showText, getText, tooltip
 
 
 class Crontab(object):
@@ -79,12 +80,13 @@ class Crontab(object):
             header=loadFile('template','_crontab')
             f.write(header)
 
-            if ANKI21: #python 3.3+
-                for k,v in self._entries.items():
-                    f.write('%s cid_%s\n'%(v,k))
-            else: #python 2.x
+            if ANKI20: #python 2.x 
                 for k,v in self._entries.viewitems():
                     f.write('%s cid_%s\n'%(v,k))
+            else: #python 3.3+
+                for k,v in self._entries.items():
+                    f.write('%s cid_%s\n'%(v,k))
+
             f.close()
         self._modified=False
 

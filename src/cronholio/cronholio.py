@@ -4,20 +4,19 @@
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 
+import time, datetime
 from aqt import mw
 from aqt.qt import *
 from anki.hooks import addHook
 from aqt.utils import getText, tooltip, showText
 from codecs import open
 from anki.utils import json
-from datetime import datetime
-import time
+from anki.lang import _
 
 from .lib.croniter import croniter
 from .lib.dateutil.tz import tz
 from .crontab import Crontab
 from .util import loadFile
-from .const import *
 
 
 class Cronholio(object):
@@ -38,11 +37,12 @@ class Cronholio(object):
 
     def onProfileLoaded(self):
         self._loadMacros()
-        QTimer.singleShot(1000, self._setMacrosCallback)
+        mw.addonManager.setConfigUpdatedAction(__name__, self._loadMacros)
 
     def showContextMenu(self, r, m):
         a=m.addAction("Add Cron Task")
-        a.setShortcut(QKeySequence(self.hotkey))
+        if self.hotkey:
+            a.setShortcut(QKeySequence(self.hotkey))
         a.triggered.connect(lambda:self.set(r.card))
 
     def onShowQuestion(self):
@@ -114,9 +114,12 @@ class Cronholio(object):
         card.flushSched()
 
     def _getDueDay(self, dt):
-        d=datetime.today()
-        today=datetime(d.year, d.month, d.day)
-        due=datetime(dt.year, dt.month, dt.day)
+        # startDate=datetime.datetime.fromtimestamp(mw.col.crt)
+        d=datetime.datetime.today()
+        # d-=datetime.timedelta(hours=startDate.hour)
+        today=datetime.datetime(d.year, d.month, d.day)
+        # today+=datetime.timedelta(hours=startDate.hour)
+        due=datetime.datetime(dt.year, dt.month, dt.day)
         diff=(due-today).days
         return diff
 
@@ -133,12 +136,6 @@ class Cronholio(object):
                 config=json.loads(data)
 
         if config:
-            self.hotkey=config['hotkey']
-            self.tagNote=config['add_tag_to_notes_even_multi_cards']
-            self.macros=config['macros']
-
-    def _setMacrosCallback(self):
-        try: #Must be loaded after profile loads, after addonmanger21 loads.
-            mw.addonManager.setConfigUpdatedAction(__name__, self._loadMacros) 
-        except AttributeError: pass
-
+            self.hotkey=config.get('hotkey')
+            self.tagNote=config.get('add_tag_to_notes_even_multi_cards')
+            self.macros=config.get('macros')
