@@ -69,7 +69,7 @@ def answerCard(self, card, ease, _old):
 
     self.col.log()
     assert ease >= 1 and ease <= 3
-    self.col.markReview(card) #for undo
+    mw.checkpoint(_("Cron task"))
 
     if ease==1:
         cronholio.unset(card)
