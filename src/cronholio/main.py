@@ -88,7 +88,13 @@ def answerCard(self, card, ease, _old):
     #No logging since IVL is unchanged
 
 
+def defaultEase(rev, _old):
+    if not cronholio.cronCard:
+        return _old(rev)
+    return 2 #default to 2 of 3 btns, prevents addon conflicts
+
 anki.collection._Collection.save = wrap(anki.collection._Collection.save, col_save, 'after')
+Reviewer._defaultEase = wrap(Reviewer._defaultEase, defaultEase, 'around')
 Reviewer._answerButtonList = wrap(Reviewer._answerButtonList, answerButtonList, 'around')
 Reviewer._buttonTime = wrap(Reviewer._buttonTime, buttonTime, 'around')
 anki.sched.Scheduler.answerButtons = wrap(anki.sched.Scheduler.answerButtons, answerButtons, 'around')
