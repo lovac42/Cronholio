@@ -1,6 +1,4 @@
-# Cronholio: Cron Task Scheduler [beta2]
-
-Labeled as beta due to timezone/locale/DST uncertainties. But otherwise, <i>fairly harmless.</i>
+# Cronholio: Cron Task Scheduler
 
 
 ## About:
