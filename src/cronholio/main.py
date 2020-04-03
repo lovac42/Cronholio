@@ -24,7 +24,7 @@ cronholio = Cronholio()
 ################################################################
 
 #Saved crontab whenever col is saved
-def col_save(self, name=None, mod=None):
+def col_save(self, *args, **kwargs):
     cronholio.crontab.dumpTab()
 
 
@@ -34,8 +34,9 @@ def keyHandler(self, evt, _old):
         cronholio.set(mw.reviewer.card)
     else: _old(self, evt)
 
+
 #Handing keybinds Anki2.1
-def shortcutKeys(self, _old): 
+def shortcutKeys(self, _old):
     ret=_old(self)
     ret.append((cronholio.hotkey,lambda:cronholio.set(mw.reviewer.card)))
     return ret
