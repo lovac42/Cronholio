@@ -1,6 +1,7 @@
 {
 	"hotkey": null,
 	"add_tag_to_notes_even_multi_cards": false,
+    "tag_note_as": "@cronCard",
 	"macros": {
 		"h":   "@hourly",
 		"d":   "@daily",

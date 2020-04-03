@@ -17,9 +17,12 @@ from .lib.croniter import croniter
 from .lib.dateutil.tz import tz
 from .crontab import Crontab
 from .util import loadFile
+from .config import Config
+from .const import *
 
 
-class Cronholio(object):
+class Cronholio:
+    tagNoteAs   = "@cronCard"
     tagNote   = False
     hotkey    = None
     macros    = {}
@@ -31,13 +34,17 @@ class Cronholio(object):
 
 
     def __init__(self):
+        self.conf=Config(ADDON_NAME)
+        addHook(ADDON_NAME+".configLoaded", self.onConfigLoaded)
+        addHook(ADDON_NAME+".configUpdated", self.onConfigLoaded)
         addHook("Reviewer.contextMenuEvent", self.showContextMenu)
-        addHook('showQuestion', self.onShowQuestion)
-        addHook('profileLoaded', self.onProfileLoaded)
+        addHook("showQuestion", self.onShowQuestion)
 
-    def onProfileLoaded(self):
-        self._loadMacros()
-        mw.addonManager.setConfigUpdatedAction(__name__, self._loadMacros)
+    def onConfigLoaded(self):
+        self.hotkey=self.conf.get("hotkey")
+        self.tagNote=self.conf.get("add_tag_to_notes_even_multi_cards", False)
+        self.tagNoteAs=self.conf.get("tag_note_as", "@cronCard")
+        self.macros=self.conf.get("macros", {})
 
     def showContextMenu(self, r, m):
         a=m.addAction("Add Cron Task")
@@ -65,7 +72,7 @@ class Cronholio(object):
             if self.crontab.set(card.id,exp):
                 if self.tagNote:
                     n=card.note()
-                    n.addTag('@cronCard')
+                    n.addTag(self.tagNoteAs)
                     n.flush()
                 tooltip(_("Cron card created"), period=1000)
                 mw.reset()
@@ -88,7 +95,7 @@ class Cronholio(object):
         self.cronCard=False
         if self.tagNote:
             n=card.note()
-            n.delTag('@cronCard')
+            n.delTag(self.tagNoteAs)
             n.flush()
         tooltip(_("Cron card removed"), period=1000)
 
@@ -126,16 +133,3 @@ class Cronholio(object):
     def _getTime(self, dt):
         tm=time.mktime(dt.timetuple())
         return tm
-
-    def _loadMacros(self, config=None):
-        if not config:
-            try:
-                config=mw.addonManager.getConfig(__name__)
-            except AttributeError:
-                data=loadFile('','config.json')
-                config=json.loads(data)
-
-        if config:
-            self.hotkey=config.get('hotkey')
-            self.tagNote=config.get('add_tag_to_notes_even_multi_cards')
-            self.macros=config.get('macros')
