@@ -1,9 +1,9 @@
 @echo off
 set ZIP=C:\PROGRA~1\7-Zip\7z.exe a -tzip -y -r
 set REPO=cronholio
-set NAME=cronholio
+set NAME=Cronholio
 set PACKID=cronholio
-set VERSION=0.0.5
+set VERSION=0.1.0
 
 
 echo %VERSION% >%REPO%\VERSION
